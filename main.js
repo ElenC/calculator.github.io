@@ -7,11 +7,12 @@ class Calculator{
 
 /*Funções Principais*/
 
-    clearAllHistory(){
+    clearAll(){
         this.inptHistory =[];
         this.updateInptDisplay();
         this.updateOutptDisplay("0");
         limitNumber = 0;
+        
     }
 
     backspace(){
@@ -41,11 +42,10 @@ class Calculator{
             this.appendToLastInpt(value);
             limitNumber ++;
         }if(limitNumber > 7){
-            alert("Erro! Limite de 8 dígitos foram ultrapassados!");
-            this.clearAllHistory();
+            alert("Ops! O limite de 8 dígitos foram ultrapassados!");
         }
         else if(this.getLastInptType() === "operator" || this.getLastInptType() === null){
-            this.addNewInpt(value, "number");
+            this.addInpt(value, "number");
         }
     }
 
@@ -53,35 +53,33 @@ class Calculator{
         limitNumber = 1;
         switch(this.getLastInptType()){
             case "number":
-                this.addNewInpt(value, "operator");
+                this.addInpt(value, "operator");
                 break;
             case "operator":
                 this.editLastInpt(value, "operator");
                 break;
             case "equals":
                 let output = this.getOutptValue();
-                this.clearAllHistory();
-                this.addNewInpt(output, "number");
-                this.addNewInpt(value, "operator");
+                this.clearAll();
+                this.addInpt(output, "number");
+                this.addInpt(value, "operator");
                 break;
             default:
                 return;
         }
     }
-
+    
     negateNumber(){
-        limitNumber --;
         if(this.getLastInptType() === "number"){
             this.editLastInpt(parseFloat(this.getLastInptValue()) * - 1, "number");
         }
     }
 
     insertDecimalPoint(){
-        limitNumber --;
         if(this.getLastInptType() === "number" && !this.getLastInptValue().includes(".")){
-            this.appendToLastInput(".");
+            this.appendToLastInpt(".");
         }else if(this.getLastInptType() === "operator" || this.getLastInptType() === null){
-            this.addNewInpt("0.", "number");
+            this.addInpt("0.", "number");
         }
     }
 
@@ -92,28 +90,38 @@ class Calculator{
                 if(currentExpression.indexOf(operator) === - 1){
                     return currentExpression;
                 }else{
-                    let operatorIdx = currentExpression.indexOf(operator);
-                    let leftOperandIndex = operatorIdx - 1;
-                    let rightOperandIndex = operatorIdx + 1;
+                    let operatorIndex = currentExpression.indexOf(operator);
+                    let leftIndex = operatorIndex - 1;
+                    let rightIndex = operatorIndex + 1;
 
-                    let partialSolution = auto.performOperation(...currentExpression.slice(leftOperandIndex, rightOperandIndex + 1));
+                    let partialSolution = auto.CalcOperator(...currentExpression.slice(leftIndex, rightIndex + 1));
                     
-                    currentExpression.splice(leftOperandIndex, 3, partialSolution.toString());
+                    currentExpression.splice(leftIndex, 3, partialSolution.toString());
 
                     return simplifyExpression(currentExpression, operator);
                 }
             }
+        
 
             let result = ["x", "/", "+", "-"].reduce(simplifyExpression, this.getAllInptValues());
 
-            this.addNewInpt("=", "equals");
+            this.addInpt("=", "equals");
             this.updateOutptDisplay(result.toString());
         }
+   
     }
 
 
 
     /*Funções Auxiliares*/
+
+    updateInptDisplay(){
+        this.inptDisplay.value = this.getAllInptValues().join(" ");
+    }
+
+    updateOutptDisplay(value){
+        this.outptDisplay.value = Number(value).toLocaleString();
+    }
 
     getLastInptType(){
         return (this.inptHistory.length === 0) ? null : this.inptHistory[this.inptHistory.length -1].type
@@ -123,15 +131,15 @@ class Calculator{
         return (this.inptHistory.length === 0) ? null : this.inptHistory[this.inptHistory.length -1].value
     }
 
-    getAllInptValues(){
-        return this.inptHistory.map(entry => entry.value);
-    }
-
     getOutptValue(){
         return this.outptDisplay.value.replace(/,/g,'');
     }
+    
+    getAllInptValues(){
+        return this.inptHistory.map(enter => enter.value); 
+    }
 
-    addNewInpt(value, type){
+    addInpt(value, type){
         this.inptHistory.push({"type": type, "value": value.toString() });
         this.updateInptDisplay()
     }
@@ -143,39 +151,31 @@ class Calculator{
 
     editLastInpt(value, type){
         this.inptHistory.pop();
-        this.addNewInpt(value, type);
+        this.addInpt(value, type);
     }
 
     delLastInpt(){
-        this.inptHistory.pop();
+        this.inptHistory.pop()
         this.updateInptDisplay();
     }
 
-    updateInptDisplay(){
-        this.inptDisplay.value = this.getAllInptValues().join(" ");
-    }
+    CalcOperator (left, operation, right){
+        left = parseFloat(left);
+        right = parseFloat(right);
 
-    updateOutptDisplay(value){
-        this.outptDisplay.value = Number(value).toLocaleString();
-    }
-
-    performOperation (leftOper, operation, rightOper){
-        leftOper = parseFloat(leftOper);
-        rightOper = parseFloat(rightOper);
-
-        if(Number.isNaN(leftOper) || Number.isNaN(rightOper)){
+        if(Number.isNaN(left) || Number.isNaN(right)){
             return;
         }
 
         switch(operation){
             case "x":
-                return leftOper * rightOper;
+                return left * right;
             case "/":
-                return leftOper / rightOper;
+                return left / right;
             case  "+":
-                return leftOper + rightOper;
+                return left + right;
             case "-":
-                return leftOper - rightOper;
+                return left - right;
             default:
                 return;
         }
@@ -184,9 +184,8 @@ class Calculator{
 
 limitNumber = 0;
 
-const inptDisplay = document.querySelector('#history');
+const inptDisplay = document.querySelector('#inputHistory');
 const outptDisplay = document.querySelector('#result');
-
 
 const allClearButton = document.querySelector("[data-all-clear]");
 const backspaceButton = document.querySelector("[data-backspace]");
@@ -200,7 +199,7 @@ const equalsButton = document.querySelector("[data-equals]");
 const calculator = new Calculator(inptDisplay, outptDisplay);
 
 allClearButton.addEventListener("click", ()=>{
-    calculator.clearAllHistory();
+    calculator.clearAll();
 });
 
 backspaceButton.addEventListener("click", ()=>{
@@ -212,16 +211,14 @@ percentButton.addEventListener("click", () => {
 });
 
 operationButtons.forEach(button => {
-    button.addEventListener("click", (event) =>{
-        let {target} = event;
-        calculator.insertOperation(target.dataset.operator)
+    button.addEventListener("click", () =>{
+        calculator.insertOperation(button.innerText)
     })
 });
 
 numberButtons.forEach(button =>{
-    button.addEventListener("click", (event) =>{
-        let{target} = event;
-        calculator.insertNumber(target.dataset.number);
+    button.addEventListener("click", () =>{
+        calculator.insertNumber(button.innerText);
     })
 });
 
