@@ -41,7 +41,7 @@ class Calculator{
             this.appendToLastInpt(value);
             limitNumber ++;
         }if(limitNumber > 7){
-            alert("Erro! Limite de 8 dígitos foi ultrapassado!");
+            alert("Erro! Limite de 8 dígitos foram ultrapassados!");
             this.clearAllHistory();
         }
         else if(this.getLastInptType() === "operator" || this.getLastInptType() === null){
