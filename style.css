@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700;900&display=swap');
+
+:root{
+    --primary1: #333232;
+    --primary2: #979797;
+    --primary3: #2dbe09;
+
+    --second1: #a8aaa8;
+    --second2: #8b8888;
+    --second3: #4c4e4d;
+    --second4: #393a39;
+
+    --white: #f2f0eb;
+    --black: #000000;
+}
+
+*, *::before, *::after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html{
+    height: 100%;
+}
+
+body{
+    padding: 50px;
+    font-family: 'Lato', sans-serif;
+    font-size: 1em;
+    background-image: linear-gradient(300deg, var(--primary2), var(--primary1));
+}
+
+/*Calculadora*/
+
+#calculator{
+    width: 332px;
+    padding: 10px;
+    margin: auto;
+    background-color: var(--black);
+    font-size: 1.2rem;
+    border: solid 1px var(--second4);
+    border-radius: 10px;
+    box-shadow: 0px 1px 7px 0px var(--black);
+}
+
+/*Display*/
+
+#display{
+    display:  grid;
+    border: solid 2.2px var(--second4);
+    border-radius: 5px;
+    height: 70px;
+    color: var(--black);
+}
+
+#display input{
+    display: block;
+    text-align: right;
+    padding: 7px 7px;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    color: var(--second3);
+    color: #ffff;
+}
+
+#display output{
+    display: block;
+    text-align: right;
+    background: none;
+    padding: 0px 6px;
+    font-weight: bold;
+    font-size: 2rem;
+    color: #ffff;
+}
+
+/*Keypad*/
+
+#keypad{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 10px;
+    padding-top: 10px;
+}
+
+#keypad button{
+    width: 70px;
+    height: 70px;
+    border: none;
+    border-radius: 50%;
+    font-family: inherit;
+    font-size: 1.5rem;
+    cursor: pointer;
+    outline: none;
+    background-color: var(--second1);
+}
+
+#keypad button.operator{
+    font-weight: bold;
+    font-size: 1.5rem;
+    background-color: var(--primary3);
+    color: var(--white);
+}
